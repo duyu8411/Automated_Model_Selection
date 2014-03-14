@@ -1,0 +1,43 @@
+Lesson Name:  B_Limitations about Automated Model Selection
+Course Name:  Automated Model Selection(AIC,BIC)
+Type:         Standard
+Author:       Yu Du
+Organization: Johns Hopkins University Biostat Department
+Version:      2.1.1
+================================================================
+--- &mult_question
+
+Please do lesson 1 first and look at the three summaries, did you notice any issue here with three selected models?
+
+_1. `yes`_
+2. `no`
+
+*** .hint
+you know it is gonna be yes!
+
+--- &text
+As you have seen if you are careful enough, the AIC for three best models we have run are different and we have three different "best" models. The AIC for the model st is -418.91, the AIC for the model st2 is -419.06 and the AIC for the model st3 is -417.98. So what is going on? That leads us to a discussion about potential issue here with automated model selection especially stepwise regression.
+
+--- &text
+So limitations about this method. 
+
+--- &text
+First, as you can see that, we change one predictor at a time so we may be very likely to miss the optimal model.
+
+--- &text
+Also, we have different best models depending on the direction we chose. That seems confusing in terms of what to use at the end.
+
+--- &text
+Futhermore, there involves multiple testing issues that leaves uncorrected.
+
+--- &text
+Even though, we do not use stepwise regression with AIC score. We simply specify a class of models and compare their AIC to pick the best one. The problem here is that there will be no better model unless it is specified beforehand in the class.
+
+--- &text
+All models are wrong! And computer selected models are less understood in terms of plausibility and statistical properties.
+
+--- &text
+When using this method, we need to have a thorough knowledge about the scenario being modelled and keep that in mind when deciding whether or not to keep any predictor.
+
+--- &text
+However, the stepwise regression with AIC criterion is widely used so it is good to know in detail what AIC and BIC are. Let's go talk about them in next lesson!

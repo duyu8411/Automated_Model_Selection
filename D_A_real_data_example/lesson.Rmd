@@ -1,0 +1,120 @@
+Lesson Name:  D_A real data example
+Course Name:  Automated Model Selection(AIC,BIC)
+Type:         Standard
+Author:       Yu Du
+Organization: Johns Hopkins University Biostat Department
+Version:      2.1.1
+================================================================
+
+--- &text
+Finally let us look at a real data example with automated model selection.
+
+--- &text
+Please read the dataset from http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data directly into R.
+
+--- &cmd_question
+Read the data in using `read.csv` and assign the data frame to variable `mpg`
+
+```{r}
+mpg <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data",sep="")
+```
+*** .hint
+Just type `mpg <- read.csv("http://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data",sep="")` and press Enter.
+
+--- &cmd_question
+Change the names of the mpg data frame for easy reference. Make it `"mpg","cyl","displacement","horsepower","weight","acceleration","modelyear","origin","car_name"`.
+
+
+```{r}
+names(mpg) <- c("mpg","cyl","displacement","horsepower","weight","acceleration","model_year","origin","car_name")
+```
+*** .hint
+Just type `names(mpg) <- c("mpg","cyl","displacement","horsepower","weight","acceleration","model_year","origin","car_name")` and press Enter.
+
+
+--- &cmd_question
+Look at the structure of mpg dataset.
+
+```{r}
+str(mpg)
+```
+*** .hint
+Just type `str(mpg)` and press Enter.
+
+
+--- &cmd_question
+Look at the summary of mpg dataset.
+
+```{r}
+summary(mpg)
+```
+*** .hint
+Just type `summary(mpg)` and press Enter.
+
+--- &text
+What we notice here is that horsepower variable is factor variable but what we want is continuous. So let us do the conversion.
+
+--- &cmd_question
+Convert the variable horsepower to continuous variable
+
+```{r}
+mpg$horsepower <- as.numeric(levels(mpg$horsepower))[mpg$horsepower]
+```
+*** .hint
+Just type `mpg$horsepower <- as.numeric(levels(mpg$horsepower))[mpg$horsepower]` and press Enter.
+
+--- &cmd_question
+There are also NA values in the dataset and let us remove all the NA values to have a complete dataset using `complete.cases()`.
+
+```{r}
+mpg <- mpg[complete.cases(mpg),]
+```
+*** .hint
+Just type `mpg <- mpg[complete.cases(mpg),]` and press Enter.
+
+--- &cmd_question
+Fit a linear model with the formula mpg~cyl+displacement+horsepower+weight+acceleration and assign to `fit`
+
+```{r}
+fit <- lm(mpg~cyl+displacement+horsepower+weight+acceleration,data=mpg)
+```
+*** .hint
+Just type `fit <- lm(mpg~cyl+displacement+horsepower+weight+acceleration,data=mpg)` and press Enter.
+
+--- &cmd_question
+Do a stepwise regression with backward selection and AIC criterion using `step()` and assign to `st`
+
+```{r}
+st <- step(fit)
+```
+*** .hint
+Just type `st <- step(fit)` and press Enter.
+
+--- &cmd_question
+Look at a summary of `st`.
+
+```{r}
+summary(st)
+```
+*** .hint
+Just type `summary(st)` and press Enter.
+
+--- &text
+We can see here that selected model is mpg ~ horsepower + weight, and this model has the best AIC score. This model makes certain sense since common sense is that the higher the horsepower and weight are, the less the mpg is. 
+
+--- &figure
+
+Let us diagnose the best selected model a little bit.
+
+*** .figure
+Plot_diagnostic.R
+
+*** .fig_type
+new
+
+--- &text
+As we can see from the figure, even if this is the best model selected, the diagnosis about the residual does not look quite good. So remember that model selection is not equal to model diagnostic. Also, when we decide whether or not to include a predictor, we need to have a thorough knowledge about the scenario being modelled!
+
+
+--- &text
+This is the end of the class and I do hope you learned something! Thank you!

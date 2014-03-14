@@ -1,0 +1,71 @@
+Lesson Name:  C_What are AIC and BIC?
+Course Name:  Automated Model Selection(AIC,BIC)
+Type:         Standard
+Author:       Yu Du
+Organization: Johns Hopkins University Biostat Department
+Version:      2.1.1
+================================================================
+
+--- &text
+AIC, short for Akaike Information Criterion, approximates the Kullback-Leibler divergence of a given model to the true model. That is why the less, the better. 
+
+--- &text
+The formula for AIC is as follows: `AIC=-2*loglikelihood+2*p`where p is the dimension of the vector of regression coefficients and loglikelihood of the model is the one with MLE of regression coefficients.
+
+--- &text
+As we can see from the above formula, AIC takes into account the relationship between model fit and the number of parameters used.
+
+--- &text
+When we are fitting Gaussian linear models like what we did before, the formula for AIC can be simplified to `AIC=Nlog(SSe/N)+2*p`where N is the number of observations and SSe is the Residual Sum of Squares.
+
+--- &text
+Now let us calculate the AIC for model st and compare it with the one provided. 
+
+--- &cmd_question
+Let us look at the summary of st one more time to extract what we want.
+
+```{r}
+summary(st)
+```
+*** .hint
+Just type `summary(st)` and press Enter.
+
+--- &cmd_question
+So we can see that N=202, residual standard error=0.3502, N-p=197, p=5. So we can calculate the SSe by taking the square of residual standard error and times N-p. Please calculate AIC for st given the information above.
+
+```{r}
+202*log(0.3502^2*197/202)+2*5
+```
+*** .hint
+Just type `202*log(0.3502^2*197/202)+2*5` and press Enter.
+
+--- &text
+Magic time again! what we get is -418.96 and the provided one for model st is -418.91. They are essentially the same if we consider the rounding issue. Look! You are on fire!
+
+--- &text
+Note that individual AIC score is useless and comparison between AIC scores is meaningful and serves as a basis for model selection. Remember the less, the better.
+
+--- &text
+So turn to BIC, which is short for Bayes Information Criterion. It is very similar to AIC and the fomula is as follows: `BIC=-2*loglikelihood+log(N)*p` where N is the number of observations or sample size.
+
+--- &text
+What we can see is that in general BIC places a bigger penalty on the number of parameters than AIC. But overall they do the same job.
+
+--- &text
+For the step function, we simply add an argument k=log(N), the criterion will switch to BIC instead of AIC. Let us see an example.
+
+--- &cmd_question
+Use step function to backward select from model fit using BIC criterion
+
+```{r}
+step(fit,k=log(202))
+```
+*** .hint
+Just type `step(fit,k=log(202))` and press Enter.
+
+--- &video
+
+Would you like to video that summarizes what I said above?
+
+*** .video_url
+http://www.youtube.com/watch?v=YkD7ydzp9_E

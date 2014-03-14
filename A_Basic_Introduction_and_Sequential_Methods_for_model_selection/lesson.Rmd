@@ -1,0 +1,218 @@
+Lesson Name:  A_Basic Introduction and Sequential Methods for model selection
+Course Name:  Automated Model Selection(AIC,BIC)
+Type:         Standard
+Author:       Yu Du
+Organization: Johns Hopkins University Biostat Department
+Version:      2.1.1
+================================================================
+
+--- &text
+Welcome to this tutorial, guys! This tutorial basically introduces the concepts and applications about automated model selection based on AIC and BIC criteria. OK Let's get started and hope you learn something while having fun.
+
+--- &text
+We all have fitted linear models before, but have we ever considered question like which variables to be included in the model?
+
+--- &text
+For example, y~x1 versus y~x1+x2, what do are we supposed to choose? Is there any criteria we can apply to this model selection? 
+
+--- &text
+The answer is yes and tools have already designed to answer this question. Basically it works as follows: first we define a class of models to be selected from and then we apply our criterion or some summary statistics to evaluate the fit of each model in the class to the actual data and then pick the one that is best fit.
+
+--- &text
+Here let me introduce you two model evaluation criteria which are AIC and BIC. AIC is short for Akaike Information Criterion and BIC is short for Bayesian Information Criterion. Later we will know that AIC and BIC are actually very similar. The rule is basically to find the model with the best AIC or BIC score. Let us keep that in mind.
+
+--- &text
+Now I would like to introduce you three ways of sequential methods for model selection: Forward, Backward and Both.
+
+--- &text
+First let us look at the forward selection.
+
+--- &text
+Step 1. Start with the intercept only model
+
+--- &text
+Step 2. Consider all models consisting of one term beyond the current model
+
+--- &text
+Step 3. Choose the model with the best AIC or BIC score
+
+--- &text
+Step 4. Repeat Step 2 and 3. Stops when all the predictors are included in the model or including any other preditor delivers a worse or non-significant score.
+
+--- &text
+Now it is turn to the Backward Selection. I guess you have already known that based on Forward Selection.
+
+--- &text
+Step 1. Start with the full model which includes all the terms you want to include.
+
+--- &text
+Step 2. Consider all submodels with one predictor removed.
+
+--- &text
+Step 3. Choose the submodel with the biggest improvement in AIC or BIC score.
+
+--- &text
+Step 4. Repeat Step 2 and 3. Stop when all predictors are removed or removing any other predictor delivers a worse or non-significant score.
+
+--- &text
+Do I have to say about the Both direction selection?
+
+--- &text
+I know you have already known that! It is basically the same as the forward selection and the backward selection except for both direction selection, you consider removing one predictor and including one preditor at the same time and then choose the model with the best AIC or BIC score.
+
+--- &text
+Having said that much, I guess you feel bored. And now it is time for us to look at something real and I will walk you through all the commands! Isn't that fun?
+
+--- &cmd_question
+Let us library the package sn first. But before that please self install the package sn by type `install.packages(sn)`.
+
+```{r}
+library(sn)
+```
+*** .hint
+Just type `library(sn)` and press Enter.
+
+--- &cmd_question
+Let us load the dataset ais and demonstrate the use of AIC or BIC in model selection.
+
+```{r}
+data(ais)
+```
+*** .hint
+Just type `data(ais)` and press Enter.
+
+--- &cmd_question
+Let us look at the structure of the dataset using `str()`
+
+```{r}
+str(ais)
+```
+*** .hint
+Just type `str(ais)` and press Enter.
+
+--- &text
+Suppose we are interested in setting up a linear regression model for the response variable BMI which is the body mass index and we want to see what other variables in the dataset impact BMI. Let us demonstrate our model selection with this scenario.
+
+--- &cmd_question
+First to see the backward selection. Let us fit a linear model with all the possible predictors in the dataset.
+
+```{r}
+fit <- lm(BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, data = ais)
+```
+*** .hint
+Just type `fit <- lm(BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, data = ais)` and press Enter.
+
+--- &cmd_question
+Let us look at a summary of this fit by using `summary()`.
+
+```{r}
+summary(fit)
+```
+*** .hint
+Just type `summary(fit)` and press Enter.
+
+
+--- &cmd_question
+Using the step function to do the backward model selection. Note the default of step function is backward model selection with AIC score. Assign the object to variable `st`.
+
+```{r}
+st <- step(fit)
+```
+*** .hint
+Just type `st <- step(fit)` and press Enter.
+
+--- &text
+Magic happens! We just have the computer backward select the model with the best AIC score for us. Check the output in the console and step does exacty what I said before. Everytime, one predictor is removed with the best AIC score for the submodel until there is no such best AIC score. Note the AIC score is the less, the better.
+
+--- &cmd_question
+Now let us look at the summary of the selected model using `summary()`
+
+```{r}
+summary(st)
+```
+*** .hint
+Just type `summary(st)` and press Enter.
+
+--- &cmd_question
+Next to see the forward selection. Let us fit a linear model with only the intercept term and assign the object to the variable `fit2`.
+
+```{r}
+fit2 <- lm(BMI ~ 1, data = ais)
+```
+*** .hint
+Just type `fit2 <- lm(BMI ~ 1, data = ais)` and press Enter.
+
+--- &cmd_question
+Let us look at a summary of this fit by using `summary()`.
+
+```{r}
+summary(fit2)
+```
+*** .hint
+Just type `summary(fit2)` and press Enter.
+
+
+--- &cmd_question
+Using the step function to do the foward model selection. Note here we have to specify the scope argument which is the biggest model we want to fit and then choose the direction to be forward. Assign the object to variable `st2`.
+
+```{r}
+st2 <- step(fit2, scope = BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, direction = "forward")
+```
+*** .hint
+Just type `st2 <- step(fit2, scope = BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, direction = "forward")` and press Enter.
+
+--- &text
+Magic happens one more time! We just have the computer forward select the model with the best AIC score for us. Check the output in the console and step does exacty what I said before. Everytime, one predictor is included with the best AIC score for the model until there is no such best AIC score. Note the AIC score is the less, the better.
+
+--- &cmd_question
+Now let us look at the summary of the selected model using `summary()`
+
+```{r}
+summary(st2)
+```
+*** .hint
+Just type `summary(st2)` and press Enter.
+
+--- &cmd_question
+Finally let us see the both direction selection. Let us fit a linear model with terms Ht + Wt + LBM + RCC + WCC and assign the object to the variable `fit3`.
+
+```{r}
+fit3 <- lm(BMI ~ Ht + Wt + LBM + RCC + WCC, data=ais)
+```
+*** .hint
+Just type `fit3 <- lm(BMI ~ Ht + Wt + LBM + RCC + WCC, data=ais)` and press Enter.
+
+--- &cmd_question
+Let us look at a summary of this fit by using `summary()`.
+
+```{r}
+summary(fit3)
+```
+*** .hint
+Just type `summary(fit3)` and press Enter.
+
+
+--- &cmd_question
+Using the step function to do the both direction model selection. Note here we have to specify the scope argument which is the biggest model we want to fit and then choose the direction to be both. Assign the object to variable `st3`.
+
+```{r}
+st3 <- step(fit3, scope = BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, direction = "both")
+```
+*** .hint
+Just type `st3 <- step(fit3, scope = BMI ~ sex + Ht + Wt + LBM + RCC + WCC + Fe + SSF + Bfat + Hc + Hg, direction = "both")` and press Enter.
+
+--- &text
+Magic happens all the time! We just have the computer "both" select the model with the best AIC score for us. Check the output in the console and step does exacty what I said before. Everytime, one predictor is included or removed with the best AIC score for the model until there is no such best AIC score. Note the AIC score is the less, the better.
+
+--- &cmd_question
+Now let us look at the summary of the selected model using `summary()`
+
+```{r}
+summary(st3)
+```
+*** .hint
+Just type `summary(st3)` and press Enter.
+
+
+--- &text
+Please continue to lesson 2.
